@@ -1,0 +1,2 @@
+com/example/mqttkotlinsample/BuildConfig.java
+ com.example.mqttkotlinsample.BuildConfig

@@ -1,0 +1,69 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.mqttkotlinsample"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="27"
+8-->D:\projects\myRemote\app\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="30" />
+9-->D:\projects\myRemote\app\src\main\AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:5:5-67
+11-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:5:22-64
+12    <uses-permission android:name="android.permission.WAKE_LOCK" />
+12-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:6:5-68
+12-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:6:22-65
+13    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+13-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:7:5-79
+13-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:7:22-76
+14
+15    <application
+15-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:9:5-28:19
+16        android:allowBackup="true"
+16-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:10:9-35
+17        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+17-->[androidx.core:core:1.6.0] C:\Users\rd\.gradle\caches\transforms-2\files-2.1\6026df9510db401bde1768f72e68950c\core-1.6.0\AndroidManifest.xml:24:18-86
+18        android:debuggable="true"
+19        android:extractNativeLibs="false"
+20        android:icon="@drawable/ic_iot_platform"
+20-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:11:9-49
+21        android:label="@string/app_name"
+21-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:12:9-41
+22        android:roundIcon="@drawable/ic_iot_platform"
+22-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:13:9-54
+23        android:supportsRtl="true"
+23-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:14:9-35
+24        android:testOnly="true"
+25        android:theme="@style/Theme.MQTTkotlinsample" >
+25-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:15:9-54
+26        <activity
+26-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:16:9-26:20
+27            android:name="com.example.mqttkotlinsample.MainActivity"
+27-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:17:13-41
+28            android:exported="true"
+28-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:18:13-36
+29            android:label="@string/app_name"
+29-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:19:13-45
+30            android:theme="@style/Theme.MQTTkotlinsample.NoActionBar" >
+30-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:20:13-70
+31            <intent-filter>
+31-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:21:13-25:29
+32                <action android:name="android.intent.action.MAIN" />
+32-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:22:17-69
+32-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:22:25-66
+33
+34                <category android:name="android.intent.category.LAUNCHER" />
+34-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:24:17-77
+34-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:24:27-74
+35            </intent-filter>
+36        </activity>
+37g
+38        <service android:name="org.eclipse.paho.android.service.MqttService" />
+38-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:27:9-80
+38-->D:\projects\myRemote\app\src\main\AndroidManifest.xml:27:18-77
+39    </application>
+40
+41</manifest>

@@ -1,0 +1,138 @@
+[
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_select_all.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_select_all.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\layout_card_view_design.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\layout\\card_view_design.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\navigation_nav_graph.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\navigation\\nav_graph.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi_ic_launcher_foreground.png.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\mipmap-xhdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v24_ic_launcher_foreground.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable-v24\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_lightbulb_on_outline.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_lightbulb_on_outline.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_color_management.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_color_management.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_lightbulb_off_outline.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_lightbulb_off_outline.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher_foreground.png.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_fridge_outline.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_fridge_outline.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_dot.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_dot.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\menu_menu_main.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\menu\\menu_main.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_volume_down.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_volume_down.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_ic_launcher_foreground.png.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_local_laundry_service.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_local_laundry_service.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\layout_fragment_connect.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\layout\\fragment_connect.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_shower.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_shower.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_lightbulb.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_lightbulb.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_iot_platform.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_iot_platform.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_media_play_pause.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_media_play_pause.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_bed.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_bed.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_preferences_color.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_preferences_color.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_media_next.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_media_next.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi_ic_launcher_foreground.png.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_color.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_color.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\layout_fragment_home.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\layout\\fragment_home.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_main.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_laptop.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_laptop.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_launcher_background.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_volume_up.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_volume_up.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_media_previous.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_media_previous.xml"
+    }
+]
