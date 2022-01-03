@@ -2,6 +2,7 @@
     <string name="app_name">MQTT Kotlin Sample App</string>
     <!-- Strings used for fragments for navigation -->
     <string name="connect_fragment_label">Connect Fragment</string>
+    <string name="my_fragment_label">My Fragment</string>
     <string name="client_fragment_label">Client Fragment</string>
 
     <string name="button_connect_text">Connect</string>
@@ -20,4 +21,6 @@
     <string name="topic_text">Topic</string>
     <string name="message_text">Message</string>
 
+    <string name="color_chooser_title">Choose color</string>
+    <string name="ok">Ok</string>
 </resources>

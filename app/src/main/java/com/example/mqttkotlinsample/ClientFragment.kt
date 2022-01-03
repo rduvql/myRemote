@@ -1,218 +1,265 @@
 package com.example.mqttkotlinsample
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.Switch
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import kotlinx.coroutines.delay
+import org.eclipse.paho.android.service.MqttAndroidClient
 import org.eclipse.paho.client.mqttv3.*
+import java.util.HashMap
 
-class ClientFragment : Fragment() {
-    private lateinit var mqttClient : MQTTClient
+enum class Tab(val room: String) {
+    MAINROOM("mainroom"),
+    LAUNDRYROOM("laundryroom"),
+    BEDROOM("bedroom"),
+    BATHROOM("bathroom")
+}
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (mqttClient.isConnected()) {
-                    // Disconnect from MQTT Broker
-                    mqttClient.disconnect(object : IMqttActionListener {
-                        override fun onSuccess(asyncActionToken: IMqttToken?) {
-                            Log.d(this.javaClass.name, "Disconnected")
+class Room(
+    var esps: ArrayList<Esp> = ArrayList()
+) {
+    fun turnAllOn() {
 
-                            Toast.makeText(context, "MQTT Disconnection success", Toast.LENGTH_SHORT).show()
-
-                            // Disconnection success, come back to Connect Fragment
-                            findNavController().navigate(R.id.action_ClientFragment_to_ConnectFragment)
-                        }
-
-                        override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                            Log.d(this.javaClass.name, "Failed to disconnect")
-                        }
-                    })
-                } else {
-                    Log.d(this.javaClass.name, "Impossible to disconnect, no server connected")
-                }
-            }
-        })
     }
 
-    override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_client, container, false)
+    fun turnAllOff() {
+
+    }
+
+    fun isOn(): Boolean {
+        return esps.any { it.isLedOn }
+    }
+}
+
+data class Esp(
+    val id: Int,
+    var isPingALive: Boolean,
+    var isLedOn: Boolean,
+    val textTitle: String,
+    val textUnder: String,
+    private var types: ArrayList<EspType> = ArrayList()
+) {
+    fun isLed(): Boolean {
+        return types.contains(EspType.LED)
+    }
+
+    fun isTempSensor(): Boolean {
+        return types.contains(EspType.TEMP_SENSOR)
+    }
+}
+
+enum class EspType {
+    LED,
+    TEMP_SENSOR,
+}
+
+class ClientFragment : Fragment(R.layout.fragment_client), EspEventsListener {
+
+    private val serverURI = "tcp://192.168.1.11:1883"
+    private val clientID = "android"
+
+    private lateinit var mqttClient: MqttAndroidClient
+
+    private var currentTab = Tab.MAINROOM
+
+    private lateinit var tabLayout: TabLayout
+    private lateinit var roomOnOffSwitch: Switch
+    private lateinit var roomColorButton: ImageButton
+
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var recyclerView: RecyclerView
+
+    private val rooms = HashMap<String, ArrayList<Esp>>();
+//    private val roomss = HashMap<String, Room>();
+
+
+    private val displayedEsps = ArrayList<Esp>()
+    private val customAdapter = EspViewAdapter(displayedEsps, this)
+
+    //
+    // Lifecycle
+    //
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Log.d("TAG", "ClientFragment.onCreateView")
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("TAG", "ClientFragment.onViewCreated")
 
-        // Get arguments passed by ConnectFragment
-        val serverURI   = arguments?.getString(MQTT_SERVER_URI_KEY)
-        val clientId    = arguments?.getString(MQTT_CLIENT_ID_KEY)
-        val username    = arguments?.getString(MQTT_USERNAME_KEY)
-        val pwd         = arguments?.getString(MQTT_PWD_KEY)
+        mqttClient = MqttAndroidClient(context, serverURI, clientID)
 
-        // Check if passed arguments are valid
-        if (    serverURI   != null    &&
-                clientId    != null    &&
-                username    != null    &&
-                pwd         != null        ) {
-            // Open MQTT Broker communication
-            mqttClient = MQTTClient(context, serverURI, clientId)
+        tabLayout = view.findViewById(R.id.tab_layout)
+        roomOnOffSwitch = view.findViewById(R.id.room_toggle_on_off_switch)
+        roomColorButton = view.findViewById(R.id.room_color_button)
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        recyclerView = view.findViewById(R.id.recycler_view)
 
-            // Connect and login to MQTT Broker
-            mqttClient.connect( username,
-                    pwd,
-                    object : IMqttActionListener {
-                        override fun onSuccess(asyncActionToken: IMqttToken?) {
-                            Log.d(this.javaClass.name, "Connection success")
+        tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
 
-                            Toast.makeText(context, "MQTT Connection success", Toast.LENGTH_SHORT).show()
-                        }
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                Log.d("TAG", "${tab?.position}");
 
-                        override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                            Log.d(this.javaClass.name, "Connection failure: ${exception.toString()}")
+                when (tab?.position) {
+                    0 -> currentTab = Tab.MAINROOM
+                    1 -> currentTab = Tab.LAUNDRYROOM
+                    2 -> currentTab = Tab.BEDROOM
+                    3 -> currentTab = Tab.BATHROOM
+                }
 
-                            Toast.makeText(context, "MQTT Connection fails: ${exception.toString()}", Toast.LENGTH_SHORT).show()
+                updateRecyclerViewData(currentTab)
+            }
 
-                            // Come back to Connect Fragment
-                            findNavController().navigate(R.id.action_ClientFragment_to_ConnectFragment)
-                        }
-                    },
-                    object : MqttCallback {
-                        override fun messageArrived(topic: String?, message: MqttMessage?) {
-                            val msg = "Receive message: ${message.toString()} from topic: $topic"
-                            Log.d(this.javaClass.name, msg)
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
 
-                            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                        }
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
 
-                        override fun connectionLost(cause: Throwable?) {
-                            Log.d(this.javaClass.name, "Connection lost ${cause.toString()}")
-                        }
+        roomOnOffSwitch.setOnClickListener {
+            // not setOnCheckedChangeListener to avoid call when updating value programmatically
+            val onOff = roomOnOffSwitch.isChecked
+            when (onOff) {
+                true -> mqttClient.publish("esp/led/${currentTab.room}/action/on", MqttMessage())
+                false -> mqttClient.publish("esp/led/${currentTab.room}/action/off", MqttMessage())
+            }
 
-                        override fun deliveryComplete(token: IMqttDeliveryToken?) {
-                            Log.d(this.javaClass.name, "Delivery complete")
-                        }
-                    })
-        } else {
-            // Arguments are not valid, come back to Connect Fragment
-            findNavController().navigate(R.id.action_ClientFragment_to_ConnectFragment)
+            rooms[currentTab.room]?.forEach { it.isLedOn = onOff }
+//            roomss.getValue(currentTab.room).esps.forEach { it.isLedOn = onOff }
+            updateRecyclerViewData(currentTab)
         }
 
-        view.findViewById<Button>(R.id.button_prefill_client).setOnClickListener {
-            // Set default values in edit texts
-            view.findViewById<EditText>(R.id.edittext_pubtopic).setText(MQTT_TEST_TOPIC)
-            view.findViewById<EditText>(R.id.edittext_pubmsg).setText(MQTT_TEST_MSG)
-            view.findViewById<EditText>(R.id.edittext_subtopic).setText(MQTT_TEST_TOPIC)
+        roomColorButton.setOnClickListener {
+
         }
 
-        view.findViewById<Button>(R.id.button_clean_client).setOnClickListener {
-            // Clean values in edit texts
-            view.findViewById<EditText>(R.id.edittext_pubtopic).setText("")
-            view.findViewById<EditText>(R.id.edittext_pubmsg).setText("")
-            view.findViewById<EditText>(R.id.edittext_subtopic).setText("")
+        swipeRefreshLayout.setOnRefreshListener {
+            rooms.forEach { mapVal -> mapVal.value.forEach { esp -> esp.isPingALive = false } }
+            mqttClient.publish("ping/esp", MqttMessage())
+            swipeRefreshLayout.isRefreshing = false
         }
 
-        view.findViewById<Button>(R.id.button_disconnect).setOnClickListener {
-            if (mqttClient.isConnected()) {
-                // Disconnect from MQTT Broker
-                mqttClient.disconnect(object : IMqttActionListener {
-                                            override fun onSuccess(asyncActionToken: IMqttToken?) {
-                                                Log.d(this.javaClass.name, "Disconnected")
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = customAdapter
+    }
 
-                                                Toast.makeText(context, "MQTT Disconnection success", Toast.LENGTH_SHORT).show()
+    override fun onStart() {
+        super.onStart()
+        Log.d("TAG", "ClientFragment.onStart")
+    }
 
-                                                // Disconnection success, come back to Connect Fragment
-                                                findNavController().navigate(R.id.action_ClientFragment_to_ConnectFragment)
-                                            }
+    override fun onResume() {
+        super.onResume()
+        Log.d("TAG", "ClientFragment.onResume")
+        mqttClient.connect(null, object : IMqttActionListener {
 
-                                            override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                                                Log.d(this.javaClass.name, "Failed to disconnect")
-                                            }
-                                        })
-            } else {
-                Log.d(this.javaClass.name, "Impossible to disconnect, no server connected")
+            override fun onSuccess(asyncActionToken: IMqttToken?) {
+
+                Toast.makeText(context, "connected", Toast.LENGTH_SHORT).show()
+
+                // each subscribe is synchronous and wait for others to finish
+                mqttClient.subscribe("pong/esp/led/+/+", 0) { topic, message ->
+
+                    val (_, _, _, room, id) = topic.split("/")
+
+                    if (!rooms.containsKey(room)) {
+                        rooms[room] = ArrayList()
+                    }
+                    val roomLeds = rooms[room]
+                    val ledd = roomLeds?.find { it.id == id.toInt() }
+                    if (ledd == null) {
+                        roomLeds?.add(Esp(id.toInt(), true, false, "esp - $id", "under"))
+                    } else {
+                        ledd.isPingALive = true
+                    }
+
+                    updateRecyclerViewData(currentTab)
+                }
+
+                // each subscribe is synchronous and wait for others to finish
+                mqttClient.subscribe("pong/esp/temp_sensor/+/+", 0) { topic, message ->
+
+                    val (_, _, _, room, id) = topic.split("/")
+
+                }
+
+                mqttClient.publish("ping/esp", MqttMessage())
+            }
+
+            override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
+                Toast.makeText(context, exception?.message, Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    override fun onPause() {
+        Log.d("TAG", "ClientFragment.onPause")
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Log.d("TAG", "ClientFragment.onStop")
+        mqttClient.disconnect()
+        rooms.forEach { mapVal -> mapVal.value.forEach { esp -> esp.isPingALive = false } }
+        super.onStop()
+    }
+
+    //
+    // EVENTS
+    //
+
+    override fun onEspClicked(esp: Esp) {
+        Log.d("TAG", "onEspClicked")
+    }
+
+    override fun onEspToggled(esp: Esp, toggle: Boolean) {
+        Log.d("TAG", "onEspToggled")
+        esp.isLedOn = toggle
+        when (toggle) {
+            true -> {
+                mqttClient.publish("esp/led/${esp.id}/action/on", MqttMessage())
+                roomOnOffSwitch.isChecked = true
+            }
+            false -> {
+                mqttClient.publish("esp/led/${esp.id}/action/off", MqttMessage())
+                if (rooms[currentTab.room]?.all { !it.isLedOn } == true) {
+                    roomOnOffSwitch.isChecked = false
+                }
             }
         }
+    }
 
-        view.findViewById<Button>(R.id.button_publish).setOnClickListener {
-            val topic   = view.findViewById<EditText>(R.id.edittext_pubtopic).text.toString()
-            val message = view.findViewById<EditText>(R.id.edittext_pubmsg).text.toString()
+    override fun onEspColorSelected(esp: Esp, selectedColor: Int) {
+        Log.d("TAG", "onEspColorSelected")
+        mqttClient.publish("esp/led/${esp.id}/color", MqttMessage(Integer.toHexString(selectedColor).toByteArray()))
+    }
 
-            if (mqttClient.isConnected()) {
-                mqttClient.publish(topic,
-                                    message,
-                                    1,
-                                    false,
-                                    object : IMqttActionListener {
-                                        override fun onSuccess(asyncActionToken: IMqttToken?) {
-                                            val msg ="Publish message: $message to topic: $topic"
-                                            Log.d(this.javaClass.name, msg)
+    //
+    // UTILS
+    //
 
-                                            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                                        }
-
-                                        override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                                            Log.d(this.javaClass.name, "Failed to publish message to topic")
-                                        }
-                                    })
-            } else {
-                Log.d(this.javaClass.name, "Impossible to publish, no server connected")
-            }
-        }
-
-        view.findViewById<Button>(R.id.button_subscribe).setOnClickListener {
-            val topic   = view.findViewById<EditText>(R.id.edittext_subtopic).text.toString()
-
-            if (mqttClient.isConnected()) {
-                mqttClient.subscribe(topic,
-                        1,
-                        object : IMqttActionListener {
-                            override fun onSuccess(asyncActionToken: IMqttToken?) {
-                                val msg = "Subscribed to: $topic"
-                                Log.d(this.javaClass.name, msg)
-
-                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                            }
-
-                            override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                                Log.d(this.javaClass.name, "Failed to subscribe: $topic")
-                            }
-                        })
-            } else {
-                Log.d(this.javaClass.name, "Impossible to subscribe, no server connected")
-            }
-        }
-
-        view.findViewById<Button>(R.id.button_unsubscribe).setOnClickListener {
-            val topic   = view.findViewById<EditText>(R.id.edittext_subtopic).text.toString()
-
-            if (mqttClient.isConnected()) {
-                mqttClient.unsubscribe( topic,
-                        object : IMqttActionListener {
-                            override fun onSuccess(asyncActionToken: IMqttToken?) {
-                                val msg = "Unsubscribed to: $topic"
-                                Log.d(this.javaClass.name, msg)
-
-                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                            }
-
-                            override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                                Log.d(this.javaClass.name, "Failed to unsubscribe: $topic")
-                            }
-                        })
-            } else {
-                Log.d(this.javaClass.name, "Impossible to unsubscribe, no server connected")
-            }
+    private fun updateRecyclerViewData(tab: Tab) {
+        displayedEsps.clear()
+        rooms[tab.room]?.let { roomEsps -> displayedEsps.addAll(roomEsps) }
+        displayedEsps.sortBy { espViewModel -> espViewModel.id }
+        Handler(Looper.getMainLooper()).post {
+            customAdapter.notifyDataSetChanged()
         }
     }
 }

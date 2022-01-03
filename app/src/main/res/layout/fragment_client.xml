@@ -1,150 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ConnectFragment">
+    android:orientation="vertical"
+    tools:context=".ClientFragment"
+    >
 
-        <Button
-            android:id="@+id/button_clean_client"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="75dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/button_clean_text"
-            app:layout_constraintBottom_toTopOf="@+id/button_prefill_client"
-            app:layout_constraintEnd_toEndOf="@+id/button_unsubscribe"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/button_subscribe"
-            app:layout_constraintTop_toBottomOf="@+id/button_subscribe"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <Button
-            android:id="@+id/button_prefill_client"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="@string/button_prefill_text"
-            app:layout_constraintBottom_toTopOf="@+id/button_disconnect"
-            app:layout_constraintEnd_toEndOf="@+id/button_unsubscribe"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/button_subscribe"
-            app:layout_constraintTop_toBottomOf="@+id/button_subscribe"
-            app:layout_constraintVertical_bias="1.0" />
-
-    <Button
-        android:id="@+id/button_disconnect"
-        android:layout_width="0dp"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="@string/button_disconnect_text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/button_unsubscribe"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/button_subscribe" />
-
-        <Button
-            android:id="@+id/button_subscribe"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:text="@string/button_subscribe_text"
-            app:layout_constraintEnd_toStartOf="@+id/button_unsubscribe"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/edittext_subtopic"
-            app:layout_constraintTop_toBottomOf="@+id/edittext_subtopic" />
-
-        <Button
-            android:id="@+id/button_unsubscribe"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/button_unsubscribe_text"
-            app:layout_constraintEnd_toEndOf="@+id/edittext_subtopic"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/button_subscribe"
-            app:layout_constraintTop_toBottomOf="@+id/edittext_subtopic" />
-
-        <Button
-            android:id="@+id/button_publish"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/button_publish_text"
-            app:layout_constraintEnd_toEndOf="@+id/edittext_pubmsg"
-            app:layout_constraintStart_toStartOf="@+id/edittext_pubmsg"
-            app:layout_constraintTop_toBottomOf="@+id/edittext_pubmsg" />
-
-        <EditText
-            android:id="@+id/edittext_pubtopic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:autofillHints="@string/topic_text"
-            android:ems="15"
-            android:hint="@string/topic_text"
-            android:inputType="text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_pubtopic" />
-
-        <EditText
-            android:id="@+id/edittext_subtopic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:autofillHints="@string/topic_text"
-            android:ems="15"
-            android:hint="@string/topic_text"
-            android:inputType="text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_subtopic" />
-
-        <EditText
-            android:id="@+id/edittext_pubmsg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:autofillHints="@string/message_text"
-            android:ems="15"
-            android:hint="@string/message_text"
-            android:inputType="text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_pubmsg" />
-
-    <TextView
-        android:id="@+id/textview_pubtopic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/topic_text"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
-        <TextView
-            android:id="@+id/textview_subtopic"
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_mainroom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/topic_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_publish" />
+            android:icon="@drawable/ic_laptop"
+            />
 
-        <TextView
-            android:id="@+id/textview_pubmsg"
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_laundryroom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/message_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edittext_pubtopic" />
+            android:icon="@drawable/ic_local_laundry_service"
+            />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_bedroom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_bed"
+            />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_bathroom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_shower"
+            />
+    </com.google.android.material.tabs.TabLayout>
+
+    <!--                  -->
+    <!--  GLOBAL ACTIONS  -->
+    <!--                  -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="60dp"
+        android:padding="8dp"
+        >
+
+        <Switch
+            android:id="@+id/room_toggle_on_off_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="32dp"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/room_color_button"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <ImageButton
+            android:id="@+id/room_color_button"
+            android:layout_width="40dp"
+            android:layout_height="60dp"
+            android:background="@null"
+            android:src="@drawable/ic_lightbulb"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--                  -->
+    <!--  SWIPE REFRESH   -->
+    <!--                  -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:isScrollContainer="true"
+                    android:nestedScrollingEnabled="true"
+                    tools:itemCount="10"
+                    tools:listitem="@layout/card_view_design"
+                    />
+
+            </ScrollView>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

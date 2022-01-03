@@ -1,56 +1,55 @@
 package com.example.mqttkotlinsample
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.delay
+import org.eclipse.paho.client.mqttv3.IMqttActionListener
+import org.eclipse.paho.client.mqttv3.IMqttToken
 
 class ConnectFragment : Fragment() {
 
-    override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_connect, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<Button>(R.id.button_prefill).setOnClickListener {
-            // Set default values in edit texts
-            view.findViewById<EditText>(R.id.edittext_server_uri).setText(MQTT_SERVER_URI)
-            view.findViewById<EditText>(R.id.edittext_client_id).setText(MQTT_CLIENT_ID)
-            view.findViewById<EditText>(R.id.edittext_username).setText(MQTT_USERNAME)
-            view.findViewById<EditText>(R.id.edittext_password).setText(MQTT_PWD)
-        }
+//        val address = "tcp://192.168.1.11:1883";
+//        val cliId = "android";
+//        val mqttCredentialsBundle = bundleOf(
+//            MQTT_SERVER_URI_KEY to address,
+//            MQTT_CLIENT_ID_KEY  to cliId
+//        );
 
-        view.findViewById<Button>(R.id.button_clean).setOnClickListener {
-            // Clean values in edit texts
-            view.findViewById<EditText>(R.id.edittext_server_uri).setText("")
-            view.findViewById<EditText>(R.id.edittext_client_id).setText("")
-            view.findViewById<EditText>(R.id.edittext_username).setText("")
-            view.findViewById<EditText>(R.id.edittext_password).setText("")
-        }
+        navigateToClientFragment(null)
 
-        view.findViewById<Button>(R.id.button_connect).setOnClickListener {
-            val serverURIFromEditText   = view.findViewById<EditText>(R.id.edittext_server_uri).text.toString()
-            val clientIDFromEditText    = view.findViewById<EditText>(R.id.edittext_client_id).text.toString()
-            val usernameFromEditText    = view.findViewById<EditText>(R.id.edittext_username).text.toString()
-            val pwdFromEditText         = view.findViewById<EditText>(R.id.edittext_password).text.toString()
+//        MQTTClient.getConnection(context, object: IMqttActionListener {
+//
+//            override fun onSuccess(asyncActionToken: IMqttToken?) {
+//                navigateToClientFragment(null)
+//            }
+//
+//            override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
+//                Toast.makeText(context, exception?.message, Toast.LENGTH_SHORT).show()
+//            }
+//        })
+    }
 
-            val mqttCredentialsBundle = bundleOf(MQTT_SERVER_URI_KEY    to serverURIFromEditText,
-                                                                 MQTT_CLIENT_ID_KEY     to clientIDFromEditText,
-                                                                 MQTT_USERNAME_KEY      to usernameFromEditText,
-                                                                 MQTT_PWD_KEY           to pwdFromEditText)
-
-            findNavController().navigate(R.id.action_ConnectFragment_to_ClientFragment, mqttCredentialsBundle)
-        }
+    /** @see ClientFragment */
+    fun navigateToClientFragment(bundle: Bundle?) {
+        view?.findNavController()?.navigate(R.id.action_ConnectFragment_to_ClientFragment, bundle)
     }
 }
