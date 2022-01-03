@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">MQTT Kotlin Sample App</string>
-    <!-- Strings used for fragments for navigation -->
+    <string name="app_name">myRemote</string>
+
     <string name="connect_fragment_label">Connect Fragment</string>
     <string name="my_fragment_label">My Fragment</string>
     <string name="client_fragment_label">Client Fragment</string>
