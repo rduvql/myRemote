@@ -56,8 +56,8 @@ class EspViewAdapter(
         }
 
         holder.toggleOnOffSwitch.isChecked = espViewModel.isLedOn
-        holder.toggleOnOffSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            eventsListenerCallback.onEspToggled(espViewModel, isChecked)
+        holder.toggleOnOffSwitch.setOnClickListener { view ->
+            eventsListenerCallback.onEspToggled(espViewModel, holder.toggleOnOffSwitch.isChecked)
         }
         var previousSelectedColor = -1;
         holder.colorPickerButton.setOnClickListener {
