@@ -11,19 +11,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 
-interface EspEventsListener {
-
-    fun onEspClicked(esp: Esp)
-
-    fun onEspToggled(esp: Esp, toggle: Boolean)
-
-    fun onEspColorSelected(esp: Esp, selectedColor: Int)
-}
-
 class EspViewAdapter(
     private val mList: List<Esp>,
-    private val eventsListenerCallback: EspEventsListener
+    private val eventsCallback: EventsListener
 ) : RecyclerView.Adapter<EspViewAdapter.ViewHolder>() {
+
+    interface EventsListener {
+        fun onEspClicked(esp: Esp)
+        fun onEspToggled(esp: Esp, toggle: Boolean)
+        fun onEspColorSelected(esp: Esp, selectedColor: Int)
+    }
 
     lateinit var colorPicker: AlertDialog
 
@@ -40,24 +37,24 @@ class EspViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val espViewModel = mList[position]
+        val esp = mList[position]
 
-        holder.titleTextView.text = espViewModel.textTitle
+        holder.titleTextView.text = esp.textTitle
 //        holder.underTextView.text = espViewModel.textUnder
 
-        if(espViewModel.isPingALive) {
-            holder.iotImageView.setColorFilter(GREEN)
-        } else {
-            holder.iotImageView.setColorFilter(YELLOW)
+        when(esp.status) {
+            EspStatus.ALIVE -> holder.iotImageView.setColorFilter(GREEN)
+            EspStatus.NO_PING_YET -> holder.iotImageView.setColorFilter(YELLOW)
+            EspStatus.NOT_ALIVE -> holder.iotImageView.setColorFilter(RED)
         }
 
         holder.itemView.setOnClickListener {
-            eventsListenerCallback.onEspClicked(espViewModel);
+            eventsCallback.onEspClicked(esp);
         }
 
-        holder.toggleOnOffSwitch.isChecked = espViewModel.isLedOn
+        holder.toggleOnOffSwitch.isChecked = esp.isLedOnOff
         holder.toggleOnOffSwitch.setOnClickListener { view ->
-            eventsListenerCallback.onEspToggled(espViewModel, holder.toggleOnOffSwitch.isChecked)
+            eventsCallback.onEspToggled(esp, holder.toggleOnOffSwitch.isChecked)
         }
         var previousSelectedColor = -1;
         holder.colorPickerButton.setOnClickListener {
@@ -69,10 +66,10 @@ class EspViewAdapter(
                 .density(6)
                 .lightnessSliderOnly()
                 .setOnColorSelectedListener { selectedColor ->
-                    Log.d("TAG", Integer.toHexString(selectedColor))
 
-                    eventsListenerCallback.onEspColorSelected(espViewModel, selectedColor)
+                    eventsCallback.onEspColorSelected(esp, selectedColor)
                     holder.colorPickerButton.setColorFilter(selectedColor);
+
                     if(previousSelectedColor == selectedColor) {
                         colorPicker.hide()
                     }

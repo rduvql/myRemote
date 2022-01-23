@@ -17,9 +17,9 @@
     </fragment>
     <fragment
         android:id="@+id/ClientFragment"
-        android:name="com.example.mqttkotlinsample.ClientFragment"
+        android:name="com.example.mqttkotlinsample.HomeFragment"
         android:label="@string/client_fragment_label"
-        tools:layout="@layout/fragment_client">
+        tools:layout="@layout/fragment_home">
 
         <action
             android:id="@+id/action_ClientFragment_to_ConnectFragment"
