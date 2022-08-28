@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), SlidingPaneLayou
         slidingPaneLayout = findViewById(R.id.sliding_pane_layout)
         slidingPaneLayout.setPanelSlideListener(this)
 
-//        setShowWhenLocked(true)
+        setShowWhenLocked(true)
 //        setTurnScreenOn(true)
     }
 

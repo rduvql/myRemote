@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +20,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import org.eclipse.paho.android.service.MqttAndroidClient
 import org.eclipse.paho.client.mqttv3.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsListener {
@@ -44,7 +42,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
     private lateinit var colorPicker: AlertDialog
 
     private lateinit var tabLayout: TabLayout
-    private lateinit var roomOnOffSwitch: Switch
     private lateinit var roomColorButton: ImageButton
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -76,7 +73,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
         mqttClient = MqttAndroidClient(context, serverURI, clientID)
 
         tabLayout = view.findViewById(R.id.tab_layout)
-        roomOnOffSwitch = view.findViewById(R.id.room_toggle_on_off_switch)
         roomColorButton = view.findViewById(R.id.room_color_button)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recycler_view)
@@ -103,18 +99,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
-
-        roomOnOffSwitch.setOnClickListener {
-            // not setOnCheckedChangeListener to avoid call when updating value programmatically
-            val onOff = roomOnOffSwitch.isChecked
-            when (onOff) {
-                true -> mqttClient.publish("esp/led/${currentTab.room}/action/on", MqttMessage())
-                false -> mqttClient.publish("esp/led/${currentTab.room}/action/off", MqttMessage())
-            }
-
-            rooms[currentTab.room]?.esps?.forEach { it.isLedOnOff = onOff }
-            updateRecyclerViewData(currentTab)
-        }
 
         var previousSelectedColor = -1;
         roomColorButton.setOnClickListener {
@@ -168,30 +152,43 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
 
                     val (_, _, _, roomTopic, id) = topic.split("/")
 
-                    if (!rooms.containsKey(roomTopic)) {
-                        rooms[roomTopic] = Room()
+                    var espLed = rooms[roomTopic]?.esps?.find { it.id == id.toInt() }
+                    if (espLed == null) {
+                        espLed = Esp(id.toInt(), "esp - $id", "")
+                        rooms[roomTopic]?.esps?.add(espLed)
                     }
-
-                    var esp = rooms[roomTopic]?.esps?.find { it.id == id.toInt() }
-                    if (esp == null) {
-                        esp = Esp(id.toInt(), "esp - $id", "")
-                        rooms[roomTopic]?.esps?.add(esp)
-                    }
-                    esp.setIsAlive()
-                    esp.defineAsLed()
+                    espLed.setIsAlive()
+                    espLed.defineAsLed()
 
                     updateRecyclerViewData(currentTab)
                 }
 
                 // each subscribe is synchronous and wait for others to finish
-                mqttClient.subscribe("pong/esp/temp_sensor/+/+", 0) { topic, message ->
+                mqttClient.subscribe("pong/esp/dht/+/+", 0) { topic, message ->
 
-                    val (_, _, _, room, id) = topic.split("/")
+                    val (_, _, _, roomTopic, id) = topic.split("/")
 
+                    var espDHT = rooms[roomTopic]?.esps?.find { it.id == id.toInt() }
+                    if (espDHT == null) {
+                        espDHT = Esp(id.toInt(), "esp - $id", "")
+                        rooms[roomTopic]?.esps?.add(espDHT)
+                    }
+                    espDHT.setIsAlive()
+                    espDHT.defineAsDHT()
+
+                    updateRecyclerViewData(currentTab)
+                }
+
+                mqttClient.subscribe("esp/dht/+/+", 0) { topic, message ->
+
+                    val (_, _, id, tempHumidity) = topic.split("/")
+
+                    Log.d("TAG", "${id}: ${tempHumidity} = ${String(message.payload)}")
                 }
 
                 mqttClient.publish("ping/esp", MqttMessage())
             }
+
 
             override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
                 Toast.makeText(context, exception?.message, Toast.LENGTH_SHORT).show()
@@ -217,26 +214,26 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
 
     override fun onEspClicked(esp: Esp) {
         Log.d("TAG", "onEspClicked")
+
+//        if(esp.isDHT()) {
+//            Log.d("TAG", "[onEspClicked] sending temp request to ${esp.id}")
+//            mqttClient.publish("esp/dht/${esp.id}/temp", MqttMessage())
+//        }
     }
 
-    override fun onEspToggled(esp: Esp, toggle: Boolean) {
-        Log.d("TAG", "onEspToggled")
-        esp.isLedOnOff = toggle
-        when (toggle) {
-            true -> {
-                mqttClient.publish("esp/led/${esp.id}/action/on", MqttMessage())
-                roomOnOffSwitch.isChecked = true
-            }
-            false -> {
-                mqttClient.publish("esp/led/${esp.id}/action/off", MqttMessage())
-                if (rooms[currentTab.room]?.esps?.all { !it.isLedOnOff } == true) {
-                    roomOnOffSwitch.isChecked = false
-                }
-            }
-        }
+    override fun onLedOnClicked(esp: Esp) {
+        Log.d("TAG", "onLedOnClicked")
+        esp.isLedOn = true
+        mqttClient.publish("esp/led/${esp.id}/on", MqttMessage())
     }
 
-    override fun onEspColorSelected(esp: Esp, selectedColor: Int) {
+    override fun onLedOffClicked(esp: Esp) {
+        Log.d("TAG", "onLedOffClicked")
+        esp.isLedOn = false
+        mqttClient.publish("esp/led/${esp.id}/off", MqttMessage())
+    }
+
+    override fun onLedColorSelected(esp: Esp, selectedColor: Int) {
         Log.d("TAG", "onEspColorSelected")
 
         val hexColor = Integer.toHexString(selectedColor).substring(2)

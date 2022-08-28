@@ -1,7 +1,6 @@
 package com.example.mqttkotlinsample
 
 import android.graphics.Color.*
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,20 +13,20 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 class EspViewAdapter(
     private val mList: List<Esp>,
     private val eventsCallback: EventsListener
-) : RecyclerView.Adapter<EspViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<EspViewAdapter.EspViewHolder>() {
 
     interface EventsListener {
         fun onEspClicked(esp: Esp)
-        fun onEspToggled(esp: Esp, toggle: Boolean)
-        fun onEspColorSelected(esp: Esp, selectedColor: Int)
+        fun onLedOnClicked(esp: Esp)
+        fun onLedOffClicked(esp: Esp)
+        fun onLedColorSelected(esp: Esp, selectedColor: Int)
     }
 
     lateinit var colorPicker: AlertDialog
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.card_view_design, parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EspViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.card_view_design, parent, false)
+        return EspViewHolder(view)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -35,40 +34,44 @@ class EspViewAdapter(
         return super.getItemViewType(position)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(espView: EspViewHolder, position: Int) {
 
         val esp = mList[position]
 
-        holder.titleTextView.text = esp.textTitle
+        espView.titleTextView.text = esp.textTitle
 //        holder.underTextView.text = espViewModel.textUnder
 
         when(esp.status) {
-            EspStatus.ALIVE -> holder.iotImageView.setColorFilter(GREEN)
-            EspStatus.NO_PING_YET -> holder.iotImageView.setColorFilter(YELLOW)
-            EspStatus.NOT_ALIVE -> holder.iotImageView.setColorFilter(RED)
+            EspStatus.ALIVE -> espView.iotImageView.setColorFilter(GREEN)
+            EspStatus.NO_PING_YET -> espView.iotImageView.setColorFilter(YELLOW)
+            EspStatus.NOT_ALIVE -> espView.iotImageView.setColorFilter(RED)
         }
 
-        holder.itemView.setOnClickListener {
+        espView.itemView.setOnClickListener {
             eventsCallback.onEspClicked(esp);
         }
 
-        holder.toggleOnOffSwitch.isChecked = esp.isLedOnOff
-        holder.toggleOnOffSwitch.setOnClickListener { view ->
-            eventsCallback.onEspToggled(esp, holder.toggleOnOffSwitch.isChecked)
+        espView.ledOnButton.setOnClickListener { view ->
+            eventsCallback.onLedOnClicked(esp)
         }
+
+        espView.ledOffButton.setOnClickListener { view ->
+            eventsCallback.onLedOffClicked(esp)
+        }
+
         var previousSelectedColor = -1;
-        holder.colorPickerButton.setOnClickListener {
+        espView.ledColorPickerButton.setOnClickListener {
 
             colorPicker = ColorPickerDialogBuilder
-                .with(holder.itemView.context)
+                .with(espView.itemView.context)
                 .setTitle("Choose color")
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(6)
                 .lightnessSliderOnly()
                 .setOnColorSelectedListener { selectedColor ->
 
-                    eventsCallback.onEspColorSelected(esp, selectedColor)
-                    holder.colorPickerButton.setColorFilter(selectedColor);
+                    eventsCallback.onLedColorSelected(esp, selectedColor)
+                    espView.ledColorPickerButton.setColorFilter(selectedColor);
 
                     if(previousSelectedColor == selectedColor) {
                         colorPicker.hide()
@@ -85,13 +88,14 @@ class EspViewAdapter(
         return mList.size
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class EspViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val iotImageView: ImageView = itemView.findViewById(R.id.image_iot)
         val titleTextView: TextView = itemView.findViewById(R.id.text_title)
-//        val underTextView: TextView = itemView.findViewById(R.id.text_under)
-        val toggleOnOffSwitch: Switch = itemView.findViewById(R.id.toggle_on_off_switch)
-        val colorPickerButton: ImageButton = itemView.findViewById(R.id.button_color_item)
+
+        val ledColorPickerButton: ImageButton = itemView.findViewById(R.id.toggle_color_switch)
+        val ledOnButton: ImageButton = itemView.findViewById(R.id.toggle_on_btn)
+        val ledOffButton: ImageButton = itemView.findViewById(R.id.toggle_off_btn)
     }
 }
 

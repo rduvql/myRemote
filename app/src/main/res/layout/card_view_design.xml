@@ -13,7 +13,11 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
+        android:minHeight="128dp"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintTop_toTopOf="parent"
         >
 
         <ImageView
@@ -21,9 +25,9 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_iot_platform"
-            android:tint="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/black"
             />
 
         <TextView
@@ -38,37 +42,36 @@
             tools:text="tools:title"
             />
 
-<!--        <TextView-->
-<!--            android:id="@+id/text_under"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textSize="20sp"-->
-<!--            android:textStyle="bold"-->
-<!--            app:layout_constraintStart_toStartOf="@+id/text_title"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/image_iot"-->
-<!--            tools:text="tools:text"-->
-<!--            />-->
-
-        <Switch
-            android:id="@+id/toggle_on_off_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
-            android:layout_marginRight="32dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button_color_item"
+        <ImageButton
+            android:id="@+id/toggle_on_btn"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@null"
+            android:src="@drawable/ic_lightbulb_on_outline"
+            app:layout_constraintBottom_toTopOf="@+id/toggle_off_btn"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             />
 
         <ImageButton
-            android:id="@+id/button_color_item"
-            android:layout_width="40dp"
-            android:layout_height="60dp"
-            android:src="@drawable/ic_lightbulb"
+            android:id="@+id/toggle_off_btn"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:background="@null"
+            android:src="@drawable/ic_lightbulb_off_outline"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/text_title"
+            />
+
+        <ImageButton
+            android:id="@+id/toggle_color_switch"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@null"
+            android:src="@drawable/ic_color"
+            app:layout_constraintEnd_toStartOf="@+id/toggle_on_btn"
+            app:layout_constraintStart_toEndOf="@+id/text_title"
+            app:layout_constraintTop_toTopOf="parent"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

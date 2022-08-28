@@ -9,11 +9,11 @@ class Room(
     }
 
     fun getTempSensorEsps(): List<Esp> {
-        return esps.filter { esp -> esp.isTempSensor() }
+        return esps.filter { esp -> esp.isDHT() }
     }
 
     fun isAnyLedOn(): Boolean {
-        return esps.any { it.isLedOnOff }
+        return esps.any { it.isLedOn }
     }
 }
 
@@ -26,7 +26,7 @@ class Esp(
     var status = EspStatus.NO_PING_YET
     var failedPingCounter = 0
 
-    var isLedOnOff = false;
+    var isLedOn = false;
 
     fun setIsAlive() {
         this.status = EspStatus.ALIVE
@@ -46,19 +46,19 @@ class Esp(
         types.add(EspType.LED)
     }
 
-    fun defineAsTempSensor() {
+    fun defineAsDHT() {
         types.add(EspType.TEMP_SENSOR)
     }
 
     fun toggleLed(onOff: Boolean) {
-        this.isLedOnOff = onOff
+        this.isLedOn = onOff
     }
 
     fun isLed(): Boolean {
         return types.contains(EspType.LED)
     }
 
-    fun isTempSensor(): Boolean {
+    fun isDHT(): Boolean {
         return types.contains(EspType.TEMP_SENSOR)
     }
 }
