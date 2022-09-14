@@ -27,6 +27,7 @@ class Esp(
     var failedPingCounter = 0
 
     var isLedOn = false;
+    var ledBrightness = 16
 
     fun setIsAlive() {
         this.status = EspStatus.ALIVE
@@ -48,10 +49,6 @@ class Esp(
 
     fun defineAsDHT() {
         types.add(EspType.TEMP_SENSOR)
-    }
-
-    fun toggleLed(onOff: Boolean) {
-        this.isLedOn = onOff
     }
 
     fun isLed(): Boolean {

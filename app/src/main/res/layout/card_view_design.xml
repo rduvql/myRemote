@@ -22,8 +22,8 @@
 
         <ImageView
             android:id="@+id/image_iot"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:src="@drawable/ic_iot_platform"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +39,17 @@
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/image_iot"
             app:layout_constraintTop_toTopOf="@+id/image_iot"
-            tools:text="tools:title"
+            tools:text="esp 30"
+            />
+
+        <TextView
+            android:id="@+id/tag_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/temp_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_iot"
+            tools:text="tag tag tag"
             />
 
         <ImageButton
@@ -64,7 +74,7 @@
             />
 
         <ImageButton
-            android:id="@+id/toggle_color_switch"
+            android:id="@+id/toggle_color_btn"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:background="@null"
@@ -72,6 +82,15 @@
             app:layout_constraintEnd_toStartOf="@+id/toggle_on_btn"
             app:layout_constraintStart_toEndOf="@+id/text_title"
             app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/temp_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="24 °C"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

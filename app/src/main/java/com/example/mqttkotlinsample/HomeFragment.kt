@@ -223,8 +223,19 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
 
     override fun onLedOnClicked(esp: Esp) {
         Log.d("TAG", "onLedOnClicked")
-        esp.isLedOn = true
-        mqttClient.publish("esp/led/${esp.id}/on", MqttMessage())
+        if(esp.isLedOn) {
+            when(esp.ledBrightness) {
+                16 -> esp.ledBrightness = 32
+                32 -> esp.ledBrightness = 64
+                64 -> esp.ledBrightness = 128
+                128 -> esp.ledBrightness = 255
+                255 -> esp.ledBrightness = 16
+            }
+            mqttClient.publish("esp/led/${esp.id}/brightness", MqttMessage("${esp.ledBrightness}".toByteArray()))
+        } else {
+            esp.isLedOn = true
+            mqttClient.publish("esp/led/${esp.id}/on", MqttMessage())
+        }
     }
 
     override fun onLedOffClicked(esp: Esp) {

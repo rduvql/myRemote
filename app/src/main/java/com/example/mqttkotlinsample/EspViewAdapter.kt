@@ -93,7 +93,7 @@ class EspViewAdapter(
         val iotImageView: ImageView = itemView.findViewById(R.id.image_iot)
         val titleTextView: TextView = itemView.findViewById(R.id.text_title)
 
-        val ledColorPickerButton: ImageButton = itemView.findViewById(R.id.toggle_color_switch)
+        val ledColorPickerButton: ImageButton = itemView.findViewById(R.id.toggle_color_btn)
         val ledOnButton: ImageButton = itemView.findViewById(R.id.toggle_on_btn)
         val ledOffButton: ImageButton = itemView.findViewById(R.id.toggle_off_btn)
     }
