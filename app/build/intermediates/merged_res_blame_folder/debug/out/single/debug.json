@@ -1,11 +1,11 @@
 [
     {
-        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_select_all.xml.flat",
-        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_select_all.xml"
-    },
-    {
         "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\layout_card_view_design.xml.flat",
         "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\layout\\card_view_design.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_select_all.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_select_all.xml"
     },
     {
         "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\navigation_nav_graph.xml.flat",
@@ -32,12 +32,12 @@
         "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_lightbulb_off_outline.xml"
     },
     {
-        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
-        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_foreground.png"
-    },
-    {
         "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher_foreground.png.flat",
         "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_foreground.png"
     },
     {
         "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_fridge_outline.xml.flat",
@@ -76,36 +76,36 @@
         "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_lightbulb.xml"
     },
     {
-        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_iot_platform.xml.flat",
-        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_iot_platform.xml"
-    },
-    {
         "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_media_play_pause.xml.flat",
         "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_media_play_pause.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_iot_platform.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_iot_platform.xml"
     },
     {
         "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_bed.xml.flat",
         "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_bed.xml"
     },
     {
-        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_preferences_color.xml.flat",
-        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_preferences_color.xml"
-    },
-    {
         "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_media_next.xml.flat",
         "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_media_next.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_preferences_color.xml.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_preferences_color.xml"
     },
     {
         "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
         "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher_round.xml"
     },
     {
-        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi_ic_launcher_foreground.png.flat",
-        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher_foreground.png"
-    },
-    {
         "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_color.xml.flat",
         "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\drawable\\ic_color.xml"
+    },
+    {
+        "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi_ic_launcher_foreground.png.flat",
+        "source": "D:\\projects\\myRemote\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher_foreground.png"
     },
     {
         "merged": "D:\\projects\\myRemote\\app\\build\\intermediates\\res\\merged\\debug\\layout_fragment_home.xml.flat",

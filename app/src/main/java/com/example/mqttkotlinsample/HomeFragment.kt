@@ -1,5 +1,7 @@
 package com.example.mqttkotlinsample
 
+import android.graphics.Color.GREEN
+import android.graphics.Color.RED
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,38 +18,39 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import org.eclipse.paho.android.service.MqttAndroidClient
 import org.eclipse.paho.client.mqttv3.*
 import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsListener {
 
-    enum class Tab(val room: String) {
-        _ALL("all"),
-        MAINROOM("mainroom"),
-        LAUNDRYROOM("laundryroom"),
-        BEDROOM("bedroom"),
-        BATHROOM("bathroom")
-    }
+//    : Thread.UncaughtExceptionHandler
+//    override fun uncaughtException(p0: Thread, p1: Throwable) {
+//        Log.d("TAG", "mqtt exception")
+//    }
 
     private val serverURI = "tcp://192.168.0.11:1883"
     private val clientID = "android"
 
     private lateinit var mqttClient: MqttAndroidClient
 
-    private var currentTab = Tab.MAINROOM
-
     private lateinit var colorPicker: AlertDialog
 
-    private lateinit var tabLayout: TabLayout
-    private lateinit var roomColorButton: ImageButton
+    private lateinit var dotServerAliveImage: ImageButton
+    private lateinit var globalColorButton: ImageButton
+    private lateinit var globalLedOnButton: ImageButton
+    private lateinit var globalLedOffButton: ImageButton
+
+    private lateinit var mediaVolumeDownBtn: ImageButton
+    private lateinit var mediaVolumeUpBtn: ImageButton
+    private lateinit var mediaPreviousButton: ImageButton
+    private lateinit var mediaPlayPauseButton: ImageButton
+    private lateinit var mediaNextButton: ImageButton
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
 
-    private val rooms = HashMap<String, Room>();
+    private val esps = ArrayList<Esp>()
 
     private val displayedEsps = ArrayList<Esp>()
     private val customAdapter = EspViewAdapter(displayedEsps, this)
@@ -65,43 +68,42 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
         super.onViewCreated(view, savedInstanceState)
         Log.d("TAG", "ClientFragment.onViewCreated")
 
-        rooms[Tab.MAINROOM.room] = Room();
-        rooms[Tab.LAUNDRYROOM.room] = Room();
-        rooms[Tab.BEDROOM.room] = Room();
-        rooms[Tab.BATHROOM.room] = Room();
-
         mqttClient = MqttAndroidClient(context, serverURI, clientID)
 
-        tabLayout = view.findViewById(R.id.tab_layout)
-        roomColorButton = view.findViewById(R.id.room_color_button)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recycler_view)
 
-        tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+        dotServerAliveImage = view.findViewById(R.id.dot_server_alive)
+        globalColorButton = view.findViewById(R.id.toggle_color_btn_g)
+        globalLedOffButton = view.findViewById(R.id.toggle_off_btn_g)
+        globalLedOnButton = view.findViewById(R.id.toggle_on_btn_g)
 
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                Log.d("TAG", "${tab?.position}");
+        mediaVolumeDownBtn = view.findViewById(R.id.toggle_volume_down)
+        mediaVolumeUpBtn = view.findViewById(R.id.toggle_volume_up)
+        mediaPreviousButton = view.findViewById(R.id.toggle_media_previous)
+        mediaPlayPauseButton = view.findViewById(R.id.toggle_media_play_pause)
+        mediaNextButton = view.findViewById(R.id.toggle_media_next)
 
-                when (tab?.position) {
-                    0 -> currentTab = Tab._ALL
-                    1 -> currentTab = Tab.MAINROOM
-                    2 -> currentTab = Tab.LAUNDRYROOM
-                    3 -> currentTab = Tab.BEDROOM
-                    4 -> currentTab = Tab.BATHROOM
-                }
+        mediaVolumeDownBtn.setOnClickListener {
+            mqttClient.publish("msi/media/vol_down", MqttMessage())
+        }
+        mediaVolumeUpBtn.setOnClickListener {
+            mqttClient.publish("msi/media/vol_up", MqttMessage())
+        }
+        mediaPreviousButton.setOnClickListener {
+            mqttClient.publish("msi/media/prev", MqttMessage())
+        }
+        mediaPlayPauseButton.setOnClickListener {
+            mqttClient.publish("msi/media/play_pause", MqttMessage())
+        }
+        mediaNextButton.setOnClickListener {
+            mqttClient.publish("msi/media/next", MqttMessage())
+        }
 
-                updateRecyclerViewData(currentTab)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-        })
+        updateRecyclerViewData()
 
         var previousSelectedColor = -1;
-        roomColorButton.setOnClickListener {
+        globalColorButton.setOnClickListener {
             colorPicker = ColorPickerDialogBuilder
                 .with(context)
                 .setTitle("Choose color")
@@ -111,7 +113,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
                 .setOnColorSelectedListener { selectedColor ->
                     Log.d("TAG", Integer.toHexString(selectedColor))
 
-                    roomColorButton.setColorFilter(selectedColor);
+                    globalColorButton.setColorFilter(selectedColor);
                     if(previousSelectedColor == selectedColor) {
                         colorPicker.hide()
                     }
@@ -123,8 +125,8 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
         }
 
         swipeRefreshLayout.setOnRefreshListener {
-            rooms.forEach { (_, room) -> room.esps.forEach { esp -> esp.setIsNotAlive() } }
-            updateRecyclerViewData(currentTab)
+            esps.forEach { esp -> esp.setIsNotAlive() }
+            updateRecyclerViewData()
             mqttClient.publish("ping/esp", MqttMessage())
             swipeRefreshLayout.isRefreshing = false
         }
@@ -141,26 +143,28 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
     override fun onResume() {
         super.onResume()
         Log.d("TAG", "ClientFragment.onResume")
+
         mqttClient.connect(null, object : IMqttActionListener {
 
             override fun onSuccess(asyncActionToken: IMqttToken?) {
 
-                Toast.makeText(context, "connected", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "connected", Toast.LENGTH_SHORT).show()
+                dotServerAliveImage.setColorFilter(GREEN)
 
                 // each subscribe is synchronous and wait for others to finish
                 mqttClient.subscribe("pong/esp/led/+/+", 0) { topic, message ->
 
                     val (_, _, _, roomTopic, id) = topic.split("/")
 
-                    var espLed = rooms[roomTopic]?.esps?.find { it.id == id.toInt() }
+                    var espLed = esps.find { it.id == id.toInt() }
                     if (espLed == null) {
                         espLed = Esp(id.toInt(), "esp - $id", "")
-                        rooms[roomTopic]?.esps?.add(espLed)
+                        esps.add(espLed)
                     }
                     espLed.setIsAlive()
                     espLed.defineAsLed()
 
-                    updateRecyclerViewData(currentTab)
+                    updateRecyclerViewData()
                 }
 
                 // each subscribe is synchronous and wait for others to finish
@@ -168,15 +172,15 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
 
                     val (_, _, _, roomTopic, id) = topic.split("/")
 
-                    var espDHT = rooms[roomTopic]?.esps?.find { it.id == id.toInt() }
+                    var espDHT = esps.find { it.id == id.toInt() }
                     if (espDHT == null) {
                         espDHT = Esp(id.toInt(), "esp - $id", "")
-                        rooms[roomTopic]?.esps?.add(espDHT)
+                        esps?.add(espDHT)
                     }
                     espDHT.setIsAlive()
                     espDHT.defineAsDHT()
 
-                    updateRecyclerViewData(currentTab)
+                    updateRecyclerViewData()
                 }
 
                 mqttClient.subscribe("esp/dht/+/+", 0) { topic, message ->
@@ -191,7 +195,8 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
 
 
             override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                Toast.makeText(context, exception?.message, Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, exception?.message, Toast.LENGTH_SHORT).show()
+                dotServerAliveImage.setColorFilter(RED)
             }
         })
     }
@@ -204,7 +209,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
     override fun onStop() {
         Log.d("TAG", "ClientFragment.onStop")
         mqttClient.disconnect()
-        rooms.forEach { (_, room) -> room.esps.forEach { esp -> esp.setIsNotAlive() } }
+        esps.forEach { esp -> esp.setIsNotAlive() }
         super.onStop()
     }
 
@@ -257,12 +262,9 @@ class HomeFragment : Fragment(R.layout.fragment_home), EspViewAdapter.EventsList
     // UTILS
     //
 
-    private fun updateRecyclerViewData(tab: Tab) {
+    private fun updateRecyclerViewData() {
         displayedEsps.clear()
-        when(tab) {
-            Tab._ALL -> displayedEsps.addAll(rooms.flatMap { (_,v) -> v.esps });
-            else -> displayedEsps.addAll(rooms[tab.room]!!.esps)
-        }
+        displayedEsps.addAll(esps);
         displayedEsps.sortBy { espViewModel -> espViewModel.id }
         Handler(Looper.getMainLooper()).post {
             customAdapter.notifyDataSetChanged()
